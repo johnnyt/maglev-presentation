@@ -1,0 +1,46 @@
+## CI Artifacts
+Gemfile.ci.lock
+
+## TEXTMATE
+*.tmproj
+tmtags
+
+## EMACS
+*~
+\#*
+.\#*
+
+## VIM
+*.swp
+
+## PROJECT::GENERAL
+.yardoc
+coverage
+doc
+log
+pkg
+rdoc
+
+## BUNDLER
+*.gem
+.bundle
+pkg
+
+## RBENV
+.ruby-version
+.rbenv*
+
+## RCOV
+coverage.data
+
+## RUBINIUS
+*.rbc
+
+## Hoe?
+.source_index
+
+# Mac Finder files
+*.DS_Store
+
+# Node / NPM
+node_modules
