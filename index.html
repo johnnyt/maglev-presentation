@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>GeoCells</title>
+
+  <style>
+    #parent-link {
+      font-family: Arial;
+      font-size: 12px;
+    }
+    #cells {
+      position: absolute;
+      top: 30px;
+    }
+    .cell {
+      border: 1px solid rgba(127,127,127,0.2);
+      color: #ccc;
+      position: absolute;
+      font-family: Arial;
+      font-size: 12px;
+      overflow: hidden;
+      height: 32px;
+      width: 32px;
+    }
+    /*
+    .vertical {
+      height: 32px;
+      width: 128px;
+    }
+    .horizontal {
+      height: 64px;
+      width: 64px;
+    }
+    */
+    .cell:hover {
+      cursor: pointer
+    }
+    .cell div {
+      padding: 4px;
+    }
+
+    .current {
+      background-color: rgba(0,127,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+  <div id="cells"></div>
+  <div id="includes">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+$(function(){
+      function getLatLngCells(lat, lng) {
+        $.getJSON('/map?lat=' + lat + '&lng=' + lng, renderCells);
+      };
+
+      function getCells(geohash) {
+        $.getJSON('/map?geohash=' + geohash, renderCells);
+      };
+
+      function getChildren(geohash) {
+        $.getJSON('/map?gen=children&geohash=' + geohash, renderCells);
+      };
+
+      function renderCells(cells) {
+        var minX = Number.POSITIVE_INFINITY,
+            minY = Number.POSITIVE_INFINITY,
+            parentHash = cells[0].geohash.slice(0,-2),
+            orientation = ((cells[0].geohash.length % 2) != 0) ? 'vertical' : 'horizontal';
+
+        $('#cells, #header').empty();
+
+        var parentLabel = (parentHash.length > 0) ? parentHash : 'Root';
+
+        $('#header').append('<a id="parent-link" href="#' + parentLabel + '">' + parentLabel + '</a>');
+        $('#parent-link').on('click', function(e){
+          e.preventDefault();
+          getCells(parentHash);
+        });
+
+        $.each(cells, function(idx,cell){
+          $('#cells').append('<div class="cell ' + orientation + '" ' +
+            'data-x="' + cell.x + '" data-y="' + cell.y + '" ' +
+            'data-geohash="' + cell.geohash + '"><div>' +
+            cell.geohash + '</div></div>');
+        });
+
+        var width = $('.cell').outerWidth(),
+          height = $('.cell').outerHeight();
+
+        $('.cell').on('click', function(){
+          getChildren($(this).data('geohash'));
+        });
+
+        $('.cell').each(function(idx,cell){
+          var el = $(cell);
+          el.css({
+            top: el.data('y') * height,
+            left: el.data('x') * width
+          });
+        });
+      }
+
+      function success(position) {
+        getLatLngCells(position.coords.latitude, position.coords.longitude);
+      }
+
+      function error(msg) {
+        alert(msg);
+      }
+
+      navigator.geolocation.getCurrentPosition(success, error);
+
+})
+    </script>
+  </div>
+</body>
+</html>
