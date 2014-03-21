@@ -34,9 +34,7 @@ class Generator
   def initialize_kids(parent)
     return unless parent.kids.empty?
 
-    ALPHABET.each do |char|
-      create_cell(parent, char)
-    end
+    ALPHABET.each{ |char| create_cell(parent, char) }
   end
 
   def create_cell(parent, char)
@@ -54,3 +52,4 @@ class Generator
     end
   end
 end
+
