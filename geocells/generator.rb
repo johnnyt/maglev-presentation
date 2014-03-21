@@ -10,8 +10,8 @@ class Generator
     nil
   end
 
-  def self.generate(depth=1, batch=BATCH_SIZE, parent=Geocell.root)
-    new(batch).generate(depth, parent)
+  def self.generate(depth=1, batch=BATCH_SIZE)
+    new(batch).generate(depth)
   end
 
   def initialize(batch_size)
